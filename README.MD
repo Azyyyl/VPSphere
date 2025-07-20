@@ -35,7 +35,7 @@ USER_ID=user_id_telegram
 
 ### 4. Jalankan Bot Secara Manual (Opsional)
 ```bash
-python3 bot.py
+python3 VPShere.py
 ```
 
 ---
@@ -45,7 +45,7 @@ python3 bot.py
 ### 1. Buat Service File
 Buat file service:
 ```bash
-sudo nano /etc/systemd/system/vpsphere-bot.service
+sudo nano /etc/systemd/system/VPShere.service
 ```
 
 Isi dengan:
@@ -57,8 +57,8 @@ After=network.target
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/opt/vpsphere-bot
-ExecStart=/opt/vpsphere-bot/venv/bin/python3 /opt/vpsphere-bot/bot.py
+WorkingDirectory=/opt/VPShere
+ExecStart=/opt/VPShere/venv/bin/python3 /opt/VPShere/VPShere.py
 Restart=always
 RestartSec=5
 Environment="PYTHONUNBUFFERED=1"
@@ -69,29 +69,29 @@ WantedBy=multi-user.target
 
 **Catatan:**
 - Ganti `User=ubuntu` dengan user yang sesuai.
-- Pastikan path `/opt/vpsphere-bot` sesuai lokasi clone project.
+- Pastikan path `/opt/VPShere` sesuai lokasi clone project.
 
 ---
 
 ### 2. Aktifkan & Jalankan Service
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable vpsphere-bot
-sudo systemctl start vpsphere-bot
-sudo systemctl status vpsphere-bot
+sudo systemctl enable VPShere
+sudo systemctl start VPShere
+sudo systemctl status VPShere
 ```
 
 ### 3. Cek Log Bot
 ```bash
-journalctl -u vpsphere-bot -f
+journalctl -u VPShere -f
 ```
 
 ---
 
 ## Struktur Project
 ```
-vpsphere-bot/
-├── bot.py
+VPShere/
+├── VPShere.py
 ├── requirements.txt
 ├── README.md
 └── .env (dibuat manual)
