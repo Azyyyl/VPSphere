@@ -117,5 +117,23 @@ VPSphere/
 ---
 
 ## License
-This project is licensed under the **MIT License**.  
-Developed by **Azylx001**. Use responsibly for server management.
+
+This project is licensed under the **[MIT License](LICENSE)**.
+
+> **Copyright (c) 2025 Azylx001**  
+>  
+> This software is free to use, copy, modify, and distribute, 
+> with or without charge, provided that the copyright notice and 
+> this permission notice appear in all copies or substantial portions 
+> of the Software.  
+>  
+> **Provided "AS IS", without any warranty of any kind.**
+
+---
+
+### **Simplified Summary**
+This software may be freely used, copied, modified, distributed, 
+or sold, as long as the copyright notice remains intact.  
+See the full license in [LICENSE](LICENSE) for details.
+
+
