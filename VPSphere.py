@@ -76,11 +76,15 @@ async def check_logins(bot):
                         known_logins.add(key)
 
                         pesan = (
-                            f"🔔 <b>Login SSH Baru!</b>\n\n"
-                            f"👤 User: <code>{user}</code>\n"
-                            f"🌐 IP: <code>{ip}</code>\n"
-                            f"📅 Waktu: <code>{waktu}</code>"
+                            "🚨 <b><u>WARNING: SSH ACCESS</u></b> 🚨\n"
+                            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                            f"👤 <b>User:</b> <code>{user}</code>\n"
+                            f"🌐 <b>IP:</b> <code>{ip}</code>\n"
+                            f"⏰ <b>Time (WITA):</b> <code>{waktu}</code>\n"
+                            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                            "⚠️ <b>Verify if this login is authorized!</b>"
                         )
+
                         try:
                             await bot.send_message(chat_id=ALLOWED_USER_ID, text=pesan, parse_mode="HTML")
                         except Exception as e:
