@@ -100,26 +100,20 @@ journalctl -u VPShere -f
 
 ---
 
-VPSphere
-├── assets
-│   └── screenshots
-│       ├── Commands.jpg
-│       ├── Help.jpg
-│       └── Start.jpg
+## Project Structure
+VPSphere/
+├── assets/
+│   └── screenshots/
+│       ├── Commands.jpg
+│       ├── Help.jpg
+│       └── Start.jpg
 ├── cek_id.py
 ├── LICENSE
 ├── README.MD
 ├── requirements.txt
-└── VPSphere.py
-└── .env
-
-## Project Structure
-```
-VPShere/
-├── VPShere.py
-├── requirements.txt
-├── README.md
+├── VPSphere.py
 └── .env (to be created manually)
+
 
 ```
 
