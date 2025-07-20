@@ -42,7 +42,7 @@ def escape_markdown(text: str) -> str:
     return re.sub(f"([{re.escape(escape_chars)}])", r'\\\1', text)
 
 # -------------------------
-# 🔍 Deteksi Anomali Login SSH 
+# 🔍 Deteksi Login SSH 
 # -------------------------
 async def check_logins(bot):
     """
@@ -53,7 +53,7 @@ async def check_logins(bot):
 
     print("📂 Memantau log SSH dari systemd journal...")
     try:
-       
+        # Jalankan journalctl follow mode
         process = await asyncio.create_subprocess_exec(
             "/usr/bin/journalctl", "-u", "ssh", "-f", "-n", "0",
             stdout=asyncio.subprocess.PIPE,
@@ -64,12 +64,12 @@ async def check_logins(bot):
         async for line_bytes in process.stdout:
             line = line_bytes.decode(errors="ignore").strip()
 
-            
+            # Cari event login berhasil
             if "Accepted password for" in line:
                 match = re.search(r"Accepted password for (\w+) from ([\d\.]+)", line)
                 if match:
                     user, ip = match.groups()
-                    waktu = datetime.now(pytz.timezone("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
+                    waktu = datetime.now(pytz.timezone("Asia/Makassar")).strftime("%Y-%m-%d %H:%M:%S")
                     key = f"{user}@{ip}"
 
                     if key not in known_logins:
@@ -96,7 +96,7 @@ async def check_logins(bot):
 
 
 # -------------------------
-# 📝 Log 
+# 📝 Log aktivitas
 # -------------------------
 def log_activity(command):
     with open("activity.log", "a") as f:
@@ -117,7 +117,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(welcome_msg, parse_mode="Markdown")
 
 # -------------------------
-# 📖 Help
+# 📖 Bantuan
 # -------------------------
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ALLOWED_USER_ID:
@@ -135,7 +135,6 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "`/upload` - upload file ke server\n"
         "`/download [file]` - ambil file dari server\n"
         "`/clear` - hapus chat terakhir\n"
-        "`/clear_all` - hapus semua chat\n"
         "`/help` - tampilkan menu ini\n\n"
         "*Contoh:*\n"
         "`nmap scanme.nmap.org`\n"
@@ -161,12 +160,6 @@ async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     await clear_messages(update.effective_chat.id, update.message.message_id, context, count=30)
     await update.message.reply_text("🧹 *Chat dibersihkan.*", parse_mode="Markdown")
-
-async def clear_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ALLOWED_USER_ID:
-        return
-    await clear_messages(update.effective_chat.id, update.message.message_id, context, count=1000)
-    await update.message.reply_text("🧹 *Semua chat berhasil dihapus.*", parse_mode="Markdown")
 
 # -------------------------
 # 📂 Lihat Folder
@@ -397,7 +390,6 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("upload", upload_handler))
     app.add_handler(CommandHandler("download", download_handler))
     app.add_handler(CommandHandler("clear", clear_command))
-    app.add_handler(CommandHandler("clear_all", clear_all_command))
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.Document.ALL, handle_file))
     app.add_handler(MessageHandler(filters.PHOTO | filters.VIDEO | filters.AUDIO, handle_media))
