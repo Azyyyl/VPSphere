@@ -1,24 +1,33 @@
 # VPSphere v3.3 - Telegram Server Manager Bot
 
-Bot Telegram untuk mengelola server (VPS) langsung dari Telegram.
+[![Version](https://img.shields.io/badge/version-3.3-blue.svg)](https://github.com/Azyyyl/VPSphere)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen.svg)](https://www.python.org/)
+[![Issues](https://img.shields.io/github/issues/Azyyyl/VPSphere)](https://github.com/Azyyyl/VPSphere/issues)
+[![Stars](https://img.shields.io/github/stars/Azyyyl/VPSphere)](https://github.com/Azyyyl/VPSphere/stargazers)
 
-### Fitur Utama
-- Jalankan perintah shell (`ls`, `nmap`, `sqlmap`, dll.).
-- Upload & download file (maksimal 2GB).
-- Notifikasi **login SSH baru** secara real-time.
-- Monitoring uptime, memori, dan disk server.
+VPSphere is a **Telegram Bot** designed to manage your VPS server directly from Telegram.  
+Easily execute commands, monitor server health, and receive real-time notifications.
 
 ---
 
-## Instalasi
+## Features
+- Execute shell commands (`ls`, `nmap`, `sqlmap`, etc.).
+- Upload & download files (up to 2GB).
+- Real-time **SSH login notifications**.
+- Monitor server uptime, memory, and disk usage.
 
-### 1. Clone Repository
+---
+
+## Installation
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Azyyyl/VPSphere.git
 cd VPSphere
 ```
 
-### 2. Buat Virtual Environment & Install Dependency
+### 2. Set Up Virtual Environment & Install Dependencies
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -26,29 +35,27 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Edit isi File `.env`
-Edit file `.env` di folder proyek, lalu isi Bot Token dan User Id Telegram Kalian:
+### 3. Configure `.env` File
+Edit the `.env` file in the project directory:
 ```env
-BOT_TOKEN=token_bot_telegram
-USER_ID=user_id_telegram
+BOT_TOKEN=your_telegram_bot_token
+USER_ID=your_telegram_user_id
 ```
 
-### 4. Jalankan Bot Secara Manual (Opsional) (Tidak Di Sarankan)
+### 4. Run the Bot Manually (Optional)
 ```bash
 python3 VPShere.py
 ```
 
 ---
 
-## Menjalankan Sebagai Service (systemd) (Disarankan)
+## Run as a Service (Recommended)
 
-### 1. Buat Service File
-Buat file service:
+### 1. Create a systemd Service File
 ```bash
 sudo nano /etc/systemd/system/VPShere.service
 ```
-
-Isi dengan:
+Add the following:
 ```ini
 [Unit]
 Description=VPSphere Telegram Bot
@@ -67,13 +74,9 @@ Environment="PYTHONUNBUFFERED=1"
 WantedBy=multi-user.target
 ```
 
-**Catatan:**
-- Ganti `User=ubuntu` dengan user yang sesuai.
-- Pastikan path `/opt/VPShere` sesuai lokasi clone project.
+Replace `User=ubuntu` and paths as needed.
 
----
-
-### 2. Aktifkan & Jalankan Service
+### 2. Enable & Start the Service
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable VPShere
@@ -81,24 +84,24 @@ sudo systemctl start VPShere
 sudo systemctl status VPShere
 ```
 
-### 3. Cek Log Bot
+### 3. View Bot Logs
 ```bash
 journalctl -u VPShere -f
 ```
 
 ---
 
-## Struktur Project
+## Project Structure
 ```
 VPShere/
 ├── VPShere.py
 ├── requirements.txt
 ├── README.md
-└── .env (dibuat manual)
+└── .env (to be created manually)
 ```
 
 ---
 
-## Lisensi
-Proyek ini dikembangkan oleh **Azylx001**.  
-Gunakan dengan bijak untuk keperluan manajemen server.
+## License
+This project is licensed under the **MIT License**.  
+Developed by **Azylx001**. Use responsibly for server management.
