@@ -26,21 +26,21 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Buat File `.env`
-Buat file `.env` di folder proyek, lalu isi dengan:
+### 3. Edit isi File `.env`
+Edit file `.env` di folder proyek, lalu isi Bot Token dan User Id Telegram Kalian:
 ```env
 BOT_TOKEN=token_bot_telegram
 USER_ID=user_id_telegram
 ```
 
-### 4. Jalankan Bot Secara Manual (Opsional)
+### 4. Jalankan Bot Secara Manual (Opsional) (Tidak Di Sarankan)
 ```bash
 python3 VPShere.py
 ```
 
 ---
 
-## Menjalankan Sebagai Service (systemd)
+## Menjalankan Sebagai Service (systemd) (Disarankan)
 
 ### 1. Buat Service File
 Buat file service:
