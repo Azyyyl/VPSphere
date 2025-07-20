@@ -7,6 +7,7 @@ import threading
 import re
 from telegram.ext import ApplicationBuilder
 from datetime import datetime
+import pytz
 from dotenv import load_dotenv
 from telegram import (
     Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton, InputFile
@@ -19,22 +20,17 @@ from telegram.ext import (
 # -------------------------
 # ⚙️ Konfigurasi
 # -------------------------
-# Ganti path ini ke lokasi folder tempat bot diinstall di server
-# Contoh: "/opt/vpsphere-bot"
-
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-USER_ID= os.getenv("USER_ID")
+USER_ID = os.getenv("USER_ID")
 
-# VALIDASI
 if not TOKEN:
-    raise ValueError("❌ BOT_TOKEN belum diset di file .env. Harap isi BOT_TOKEN sebelum menjalankan bot!")
+    raise ValueError("❌ BOT_TOKEN belum diset di file .env!")
 if not USER_ID:
-    raise ValueError("❌ USER_ID belum diset di file .env. Harap isi USER_ID sebelum menjalankan bot!")
+    raise ValueError("❌ USER_ID belum diset di file .env!")
 
-ALLOWED_USER_ID = int(USER_ID)  # Ubah jadi integer setelah validasi
-
-current_dir = "/opt/hostingerbot" # Ganti lokasi ini dengan lokasi instalasi bot di vps kamu
+ALLOWED_USER_ID = int(USER_ID)
+current_dir = "/opt/hostingerbot"  # Lokasi instalasi bot
 active_process = {}
 BUFFER_LIMIT = 3500
 
@@ -46,43 +42,53 @@ def escape_markdown(text: str) -> str:
     return re.sub(f"([{re.escape(escape_chars)}])", r'\\\1', text)
 
 # -------------------------
-# 🔍 Deteksi Login SSH
+# 🔍 Deteksi Login SSH 
 # -------------------------
 async def check_logins(bot):
-    global last_logged_in
-    while True:
-        try:
-            # Gunakan 'who' biasa, karena '--time' kadang tidak tersedia
-            output = subprocess.check_output("who", shell=True).decode().strip()
-            if not output:
-                current_sessions = set()
-            else:
-                current_sessions = set(output.splitlines())
+    """
+    Pantau login SSH dari systemd journal (Debian 12, Hostinger).
+    Kirim notifikasi otomatis ke ALLOWED_USER_ID jika ada login baru.
+    """
+    known_logins = set()
 
-            # Cari session baru
-            new_sessions = [line for line in current_sessions if line not in last_logged_in]
+    print("📂 Memantau log SSH dari systemd journal...")
+    try:
+        # Jalankan journalctl follow mode
+        process = await asyncio.create_subprocess_exec(
+            "/usr/bin/journalctl", "-u", "ssh", "-f", "-n", "0",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
 
-            for session in new_sessions:
-                # Escape agar tidak error di MarkdownV2
-                safe_text = escape_markdown(session)
-                try:
-                    await bot.send_message(
-                        chat_id=ALLOWED_USER_ID,
-                        text=f"🚨 *Login SSH Baru!*\n```\n{safe_text}\n```",
-                        parse_mode="MarkdownV2"
-                    )
-                except Exception as send_error:
-                    print(f"Gagal kirim notif login: {send_error}")
 
-            # Update session yang tercatat
-            last_logged_in = current_sessions
+        async for line_bytes in process.stdout:
+            line = line_bytes.decode(errors="ignore").strip()
 
-        except subprocess.CalledProcessError as e:
-            print(f"Error jalankan 'who': {e}")
-        except Exception as e:
-            print(f"Error cek login: {e}")
+            # Cari event login berhasil
+            if "Accepted password for" in line:
+                match = re.search(r"Accepted password for (\w+) from ([\d\.]+)", line)
+                if match:
+                    user, ip = match.groups()
+                    waktu = datetime.now(pytz.timezone("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M:%S")
+                    key = f"{user}@{ip}"
 
-        await asyncio.sleep(10)
+                    if key not in known_logins:
+                        known_logins.add(key)
+
+                        pesan = (
+                            f"🔔 <b>Login SSH Baru!</b>\n\n"
+                            f"👤 User: <code>{user}</code>\n"
+                            f"🌐 IP: <code>{ip}</code>\n"
+                            f"📅 Waktu: <code>{waktu}</code>"
+                        )
+                        try:
+                            await bot.send_message(chat_id=ALLOWED_USER_ID, text=pesan, parse_mode="HTML")
+                        except Exception as e:
+                            print(f"Gagal kirim notifikasi SSH: {e}")
+
+    except asyncio.CancelledError:
+        print("Task check_logins dihentikan.")
+        raise
 
 
 # -------------------------
@@ -125,7 +131,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "`/upload` - upload file ke server\n"
         "`/download [file]` - ambil file dari server\n"
         "`/clear` - hapus chat terakhir\n"
-        "`/clear_all` - hapus semua chat (sebisa mungkin)\n"
+        "`/clear_all` - hapus semua chat\n"
         "`/help` - tampilkan menu ini\n\n"
         "*Contoh:*\n"
         "`nmap scanme.nmap.org`\n"
@@ -295,7 +301,7 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await run_shell(update, context, text)
 
 # -------------------------
-# Upload File Handler (Debug Fixed)
+# Upload File Handler
 # -------------------------
 async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ALLOWED_USER_ID:
@@ -318,9 +324,9 @@ async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     except Exception as e:
         await update.message.reply_text(f"❌ Gagal upload:\n<code>{e}</code>", parse_mode="HTML")
-        
+
 # -------------------------
-# Handle Foto/Media (Photo, Video, Audio)
+# Handle Media (Foto/Video/Audio)
 # -------------------------
 async def handle_media(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ALLOWED_USER_ID:
@@ -329,7 +335,7 @@ async def handle_media(update: Update, context: ContextTypes.DEFAULT_TYPE):
         target_dir = os.path.join(current_dir, "Upload")
         os.makedirs(target_dir, exist_ok=True)
 
-        if update.message.photo:  # Ambil resolusi tertinggi
+        if update.message.photo:
             file_obj = update.message.photo[-1]
             ext = ".jpg"
             fname = f"photo_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
@@ -373,15 +379,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # -------------------------
 # 🚀 Main
 # -------------------------
-last_logged_in = set()  # tambahkan di atas
+last_logged_in = set()
 
 async def on_startup(app):
     print("Bot siap!")
-    # Jalankan pengecekan login SSH di background
     asyncio.create_task(check_logins(app.bot))
 
+
 if __name__ == "__main__":
-    # Panggil on_startup lewat post_init supaya task jalan
     app = ApplicationBuilder().token(TOKEN).post_init(on_startup).build()
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
