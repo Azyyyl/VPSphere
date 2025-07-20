@@ -81,8 +81,7 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-
----
+```
 
 ### 2. Enable & Start the Service
 ```bash
