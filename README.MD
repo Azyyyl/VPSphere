@@ -67,23 +67,20 @@ sudo nano /etc/systemd/system/VPSphere.service
 Add the following:
 ```ini
 [Unit]
-Description=VPSphere Telegram Bot
+Description=VPSphere v3.3
 After=network.target
 
 [Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/opt/VPSphere
-ExecStart=/opt/VPSphere/venv/bin/python3 /opt/VPSphere/VPSphere.py
+User=root
+WorkingDirectory=/opt/hostingerbot
+ExecStart=/opt/hostingerbot/venv/bin/python /opt/hostingerbot/Bot.py
+EnvironmentFile=/opt/hostingerbot/.env
+Environment="PATH=/opt/hostingerbot/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Restart=always
 RestartSec=5
-Environment="PYTHONUNBUFFERED=1"
 
 [Install]
 WantedBy=multi-user.target
-```
-
-Replace `User=ubuntu` and paths as needed.
 
 ### 2. Enable & Start the Service
 ```bash
