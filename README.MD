@@ -19,7 +19,6 @@ Easily execute commands, monitor server health, and receive real-time notificati
 
 ---
 
-<<<<<<< HEAD
 ## Screenshots
 Here’s how VPSphere looks in action:
 
@@ -29,8 +28,6 @@ Here’s how VPSphere looks in action:
 
 ---
 
-=======
->>>>>>> 659facd1e9306805a41b9f69829fba567b738b0c
 ## Installation
 
 ### 1. Clone the Repository
@@ -103,7 +100,6 @@ journalctl -u VPShere -f
 
 ---
 
-<<<<<<< HEAD
 VPSphere
 ├── assets
 │   └── screenshots
@@ -117,7 +113,6 @@ VPSphere
 └── VPSphere.py
 └── .env
 
-=======
 ## Project Structure
 ```
 VPShere/
@@ -125,7 +120,7 @@ VPShere/
 ├── requirements.txt
 ├── README.md
 └── .env (to be created manually)
->>>>>>> 659facd1e9306805a41b9f69829fba567b738b0c
+
 ```
 
 ---
