@@ -99,7 +99,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ALLOWED_USER_ID:
         return
     welcome_msg = (
-        "*Selamat Datang di VPSphere v3.1!*\n\n"
+        "*Selamat Datang di VPSphere v3.3!*\n\n"
         "Bot ini siap membantu kamu mengelola server langsung dari Telegram.\n\n"
         "Ketik `/help` untuk melihat daftar perintah yang tersedia.\n\n"
         "⚠️ *Hanya user terotorisasi yang bisa mengakses bot ini!*"
