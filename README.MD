@@ -53,7 +53,7 @@ USER_ID=your_telegram_user_id
 
 ### 4. Run the Bot Manually (Optional)
 ```bash
-python3 VPShere.py
+python3 VPSphere.py
 ```
 
 ---
@@ -62,7 +62,7 @@ python3 VPShere.py
 
 ### 1. Create a systemd Service File
 ```bash
-sudo nano /etc/systemd/system/VPShere.service
+sudo nano /etc/systemd/system/VPSphere.service
 ```
 Add the following:
 ```ini
@@ -73,8 +73,8 @@ After=network.target
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/opt/VPShere
-ExecStart=/opt/VPShere/venv/bin/python3 /opt/VPShere/VPShere.py
+WorkingDirectory=/opt/VPSphere
+ExecStart=/opt/VPSphere/venv/bin/python3 /opt/VPSphere/VPSphere.py
 Restart=always
 RestartSec=5
 Environment="PYTHONUNBUFFERED=1"
@@ -88,19 +88,20 @@ Replace `User=ubuntu` and paths as needed.
 ### 2. Enable & Start the Service
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable VPShere
-sudo systemctl start VPShere
-sudo systemctl status VPShere
+sudo systemctl enable VPSphere
+sudo systemctl start VPSphere
+sudo systemctl status VPSphere
 ```
 
 ### 3. View Bot Logs
 ```bash
-journalctl -u VPShere -f
+journalctl -u VPSphere -f
 ```
 
 ---
 
 ## Project Structure
+```
 VPSphere/
 ├── assets/
 │   └── screenshots/
@@ -113,8 +114,6 @@ VPSphere/
 ├── requirements.txt
 ├── VPSphere.py
 └── .env (to be created manually)
-
-
 ```
 
 ---
