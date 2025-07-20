@@ -42,7 +42,7 @@ def escape_markdown(text: str) -> str:
     return re.sub(f"([{re.escape(escape_chars)}])", r'\\\1', text)
 
 # -------------------------
-# 🔍 Deteksi Login SSH 
+# 🔍 Deteksi Anomali Login SSH 
 # -------------------------
 async def check_logins(bot):
     """
@@ -53,7 +53,7 @@ async def check_logins(bot):
 
     print("📂 Memantau log SSH dari systemd journal...")
     try:
-        # Jalankan journalctl follow mode
+       
         process = await asyncio.create_subprocess_exec(
             "/usr/bin/journalctl", "-u", "ssh", "-f", "-n", "0",
             stdout=asyncio.subprocess.PIPE,
@@ -64,7 +64,7 @@ async def check_logins(bot):
         async for line_bytes in process.stdout:
             line = line_bytes.decode(errors="ignore").strip()
 
-            # Cari event login berhasil
+            
             if "Accepted password for" in line:
                 match = re.search(r"Accepted password for (\w+) from ([\d\.]+)", line)
                 if match:
@@ -96,7 +96,7 @@ async def check_logins(bot):
 
 
 # -------------------------
-# 📝 Log aktivitas
+# 📝 Log 
 # -------------------------
 def log_activity(command):
     with open("activity.log", "a") as f:
@@ -117,7 +117,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(welcome_msg, parse_mode="Markdown")
 
 # -------------------------
-# 📖 Bantuan
+# 📖 Help
 # -------------------------
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ALLOWED_USER_ID:
